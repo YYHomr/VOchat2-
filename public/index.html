@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>VOChat 2</title>
+  <title>VOAI Free</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <!-- PDF.js for advanced PDF text extraction -->
@@ -507,6 +507,83 @@
 
     body.dark .header-title {
       color: var(--gray-100);
+    }
+
+    /* Upgrade Button Styles */
+    .upgrade-button-container {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      margin-right: var(--space-4);
+      position: relative;
+    }
+
+    .upgrade-button {
+      background: linear-gradient(135deg, #c63afd, #49005f);
+      color: #000 !important;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+      white-space: nowrap;
+    }
+
+    .upgrade-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+      background: linear-gradient(135deg, #49005f, #c63afd);
+    }
+
+    .upgrade-button i {
+      font-size: 14px;
+    }
+
+    .dismiss-upgrade-btn {
+      position: absolute;
+      right: -8px;
+      top: -8px;
+      background: #333;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      transform: scale(0.5);
+      z-index: 10;
+    }
+
+    body.dark .dismiss-upgrade-btn {
+      background: #eee;
+      color: #333;
+      border-color: #2d2d2d;
+    }
+
+    .upgrade-button-container:hover .dismiss-upgrade-btn {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    .dismiss-upgrade-btn:hover {
+      background: #f44336;
+      color: white;
+      border-color: #f44336;
     }
 
     /* Conversation Name Display */
@@ -3573,6 +3650,17 @@
       </button>
     </div>
 
+    <!-- Upgrade to Pro Button -->
+    <div class="upgrade-button-container" id="upgradeBtnContainer">
+      <a href="/pricing.html" class="upgrade-button">
+        <i class="fa-solid fa-circle-arrow-up"></i>
+        <span>Upgrade to Pro</span>
+      </a>
+      <button class="dismiss-upgrade-btn" onclick="dismissUpgradeButton(event)" title="Dismiss">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
     <!-- New Model Selector with Hover Text -->
     <div class="model-selector">
       <div class="model-buttons">
@@ -4352,7 +4440,7 @@
 
   <script>
 
-    const CURRENT_PLAN = "pro";
+    const CURRENT_PLAN = "free";
 
 
     // Usage Limits Configuration
@@ -9648,6 +9736,15 @@ Always refer to yourself as VO from VOAI AI.`;
 
       overlay.innerHTML = text;
       syncScroll(textarea);
+    }
+
+    function dismissUpgradeButton(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      const container = document.getElementById('upgradeBtnContainer');
+      if (container) {
+        container.style.display = 'none';
+      }
     }
 
   </script>
