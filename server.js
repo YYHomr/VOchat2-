@@ -6,6 +6,7 @@ const axios = require("axios");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 // ====== Check API Key ======
@@ -23,6 +24,13 @@ app.use(express.static("public")); // Serves index.html / free.html / pricing.ht
 // ====== JSON Storage ======
 const USERS_FILE = "users.json";
 const CHATS_FILE = "chats.json";
+
+// ====== Upload Directories ======
+const SANDBOX_DIR = "/tmp/sandbox_uploads";
+const UPLOADS_DIR = "/tmp/uploads";
+
+if (!fs.existsSync(SANDBOX_DIR)) fs.mkdirSync(SANDBOX_DIR, { recursive: true });
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 
 function loadUsers() {
@@ -463,14 +471,13 @@ if (typeof lastMessage === "string" && lastMessage.includes("<voai-file")) {
 
     const buffer = Buffer.from(base64, "base64");
 
-    // generate unique name
-    const path = require("path");
+    // save file
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const ext = path.extname(fileName) || ".txt";
     const finalName = unique + ext;
 
     // save file
-    const filePath = path.join(__dirname, "sandbox_uploads", finalName);
+    const filePath = path.join(SANDBOX_DIR, finalName);
     fs.writeFileSync(filePath, buffer);
 
     // return download link
@@ -752,8 +759,7 @@ messages.unshift({
           agentSteps.push({ text: `ZIP Operation: ${args.action}`, icon: "fa-file-archive", details: `Processing ZIP ${args.action}...`, type: "info" });
           try {
             const AdmZip = require('adm-zip');
-            const UPLOADS_DIR = path.join(__dirname, "Uploads");
-            if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+            // UPLOADS_DIR is defined at the top
 
             let result = { ok: false, message: "" };
 
@@ -1153,12 +1159,11 @@ messages.unshift({
 // ==========================================
 // VOAI SANDBOX — Upload & Download
 // ==========================================
-const path = require("path");
+// path requirement moved to top
 const multer = require("multer");
 
 // create storage folder
-const SANDBOX_DIR = path.join(__dirname, "sandbox_uploads");
-if (!fs.existsSync(SANDBOX_DIR)) fs.mkdirSync(SANDBOX_DIR);
+// sandbox directories defined at the top
 
 // Multer storage
 const sandboxStorage = multer.diskStorage({
